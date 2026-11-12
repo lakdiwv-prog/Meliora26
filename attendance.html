@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meliora '26 - Attendance</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;padding:25px 15px;
+ display:grid;place-items:center;
+ font-family:Inter,Arial,sans-serif;color:white;
+ background:radial-gradient(ellipse at top left,#382078 0%,transparent 45%),
+ linear-gradient(145deg,#080817,#050611 65%,#11102b);
+}
+.wrap{width:min(100%,620px)}
+.back{
+ display:inline-block;text-decoration:none;color:#c5cbe0;
+ padding:10px 15px;border:1px solid #8054ff70;
+ border-radius:12px;margin-bottom:20px;
+}
+header{text-align:center;margin-bottom:30px}
+.brand{display:flex;align-items:center;justify-content:center;gap:20px}
+.line{height:2px;width:90px;background:linear-gradient(90deg,transparent,#ffbd32)}
+.mark{font-size:40px;font-weight:900;letter-spacing:-10px;padding-right:10px;color:#ffbd32}
+h1{font-size:clamp(48px,10vw,72px);margin:15px 0 8px;letter-spacing:-3px}
+h1 span{color:#ffbd32}
+.tagline{font-size:12px;letter-spacing:3px;color:#abb0c9}
+.card,.attendance{
+ background:linear-gradient(135deg,#1b1b3f,#080a1b 70%,#15142d);
+ border:1px solid #8054ff75;border-radius:25px;
+ box-shadow:0 18px 55px #0007;
+}
+.card{
+ padding:30px;display:grid;
+ grid-template-columns:.8fr 1.4fr;
+ align-items:center;gap:25px;
+}
+.avatar-wrap{
+ display:grid;place-items:center;
+ border-right:1px solid #8054ff50;
+ padding-right:20px;min-height:220px;
+}
+.avatar{
+ width:145px;height:145px;border-radius:50%;padding:5px;
+ background:conic-gradient(#ffbd32,#8054ff,#ffbd32);
+}
+.avatar-inner{
+ width:100%;height:100%;border-radius:50%;
+ display:grid;place-items:center;
+ background:#151731;font-size:65px;
+}
+.details{display:grid;gap:20px}
+.detail{
+ display:grid;grid-template-columns:23px auto 1fr;
+ gap:10px;align-items:center;
+ color:#bfc5dd;font-size:15px;
+}
+.detail .symbol{font-size:19px}
+.value{color:white;font-weight:750;overflow-wrap:anywhere}
+.pending{color:#ffbd32}
+.divider{grid-column:1/-1;height:1px;background:#8054ff45}
+.attendance{
+ margin-top:22px;padding:20px;
+ display:flex;align-items:center;gap:12px;
+}
+.attendance-title{
+ font-size:clamp(18px,5vw,27px);
+ font-weight:750;margin-right:auto;
+ display:flex;align-items:center;gap:10px;
+}
+.choice{
+ width:68px;height:68px;flex-shrink:0;
+ border-radius:19px;cursor:pointer;
+ color:white;background:#202b43;
+ border:1px solid #8490b5;
+ font-size:32px;font-weight:bold;
+ transition:.2s;
+}
+.choice:hover{transform:translateY(-3px)}
+.present[aria-pressed="true"]{
+ background:linear-gradient(145deg,#08c77c,#007c59);
+ border:2px solid #00f18c;
+ box-shadow:0 0 25px #00f18c66;
+}
+.absent[aria-pressed="true"]{
+ background:linear-gradient(145deg,#c83e5b,#74243f);
+ border:2px solid #ff647b;
+ box-shadow:0 0 25px #ff426766;
+}
+.status{text-align:center;color:#aeb5cf;font-size:12px;margin-top:15px}
+footer{text-align:center;margin-top:35px;color:#999eb8}
+@media(max-width:480px){
+ .card{padding:22px 15px;gap:15px}
+ .avatar-wrap{min-height:190px;padding-right:12px}
+ .avatar{width:min(27vw,120px);height:auto;aspect-ratio:1}
+ .detail{font-size:12px;grid-template-columns:18px auto 1fr;gap:6px}
+ .details{gap:17px}
+ .attendance{padding:14px 10px;gap:8px}
+ .choice{width:57px;height:60px;font-size:27px;border-radius:15px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+ <a class="back" href="index.html">← Back to hub</a>
+
+ <header>
+  <div class="brand">
+   <div class="line"></div>
+   <div class="mark">MΛ</div>
+   <div class="line"></div>
+  </div>
+  <h1>Meliora <span>'26</span></h1>
+  <p class="tagline">GATHER • CONNECT • CELEBRATE</p>
+ </header>
+
+ <section class="card">
+
+  <div class="avatar-wrap">
+   <div class="avatar">
+    <div class="avatar-inner">👤</div>
+   </div>
+  </div>
+
+  <div class="details">
+   <div class="detail">
+    <span class="symbol">🎟</span>
+    <span>Ticket ID</span>
+    <span class="value">001</span>
+   </div>
+   <div class="detail">
+    <span class="symbol">👤</span>
+    <span>Name</span>
+    <span class="value">Vihas</span>
+   </div>
+   <div class="detail">
+    <span class="symbol">📅</span>
+    <span>Badge</span>
+    <span class="value">Old</span>
+   </div>
+   <div class="detail">
+    <span class="symbol">💳</span>
+    <span>Payment</span>
+    <span class="value pending">Pending</span>
+   </div>
+   <div class="detail">
+    <span class="symbol">♂</span>
+    <span>Gender</span>
+    <span class="value">M</span>
+   </div>
+  </div>
+
+  <div class="divider"></div>
+ </section>
+
+ <section class="attendance">
+  <div class="attendance-title">
+   <span>☑</span> Attendance
+  </div>
+
+  <button class="choice present"
+   aria-label="Present" aria-pressed="false"
+   data-status="present">✓</button>
+
+  <button class="choice absent"
+   aria-label="Absent" aria-pressed="false"
+   data-status="absent">×</button>
+ </section>
+
+ <p class="status" id="status">ATTENDANCE NOT MARKED</p>
+
+ <footer>
+  <div class="brand">
+   <div class="line"></div>
+   <div class="mark">MΛ</div>
+   <div class="line"></div>
+  </div>
+  MELIORA '26
+ </footer>
+
+</main>
+
+<script>
+const buttons=document.querySelectorAll(".choice");
+const status=document.getElementById("status");
+
+buttons.forEach(button=>{
+ button.addEventListener("click",()=>{
+  const selected=button.getAttribute("aria-pressed")==="true";
+
+  buttons.forEach(item=>{
+   item.setAttribute("aria-pressed","false");
+  });
+
+  if(selected){
+   status.textContent="ATTENDANCE NOT MARKED";
+   return;
+  }
+
+  button.setAttribute("aria-pressed","true");
+
+  status.textContent=
+   button.dataset.status==="present"
+   ? "PRESENT — ATTENDANCE MARKED"
+   : "ABSENT — ATTENDANCE MARKED";
+ });
+});
+</script>
+</body>
+</html>

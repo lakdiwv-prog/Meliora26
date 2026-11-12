@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meliora '26 | Attendance</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+ margin:0;
+ min-height:100vh;
+ padding:25px 15px;
+ font-family:Inter,Arial,sans-serif;
+ color:#f6f7ff;
+ background:
+ radial-gradient(ellipse at top left,#382078,transparent 45%),
+ linear-gradient(145deg,#080817,#050611 65%,#11102b);
+}
+
+.container{
+ width:min(100%,850px);
+ margin:auto;
+}
+
+.back{
+ display:inline-block;
+ color:#c5cbe0;
+ text-decoration:none;
+ padding:10px 15px;
+ border:1px solid #8054ff70;
+ border-radius:12px;
+ margin-bottom:25px;
+}
+
+header{text-align:center;margin-bottom:30px}
+
+.brand{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ gap:20px;
+}
+
+.line{
+ height:2px;
+ width:90px;
+ background:linear-gradient(90deg,transparent,#ffbd32);
+}
+
+.logo{
+ color:#ffbd32;
+ font-size:40px;
+ font-weight:900;
+ letter-spacing:-10px;
+ padding-right:10px;
+}
+
+h1{
+ font-size:clamp(40px,9vw,65px);
+ margin:15px 0 8px;
+ letter-spacing:-3px;
+}
+
+h1 span{color:#ffbd32}
+
+.subtitle{
+ color:#abb0c9;
+ font-size:12px;
+ letter-spacing:3px;
+}
+
+.panel{
+ border:1px solid #8054ff75;
+ border-radius:24px;
+ background:linear-gradient(135deg,#1b1b3f,#080a1b);
+ box-shadow:0 18px 55px #0007;
+ padding:22px;
+}
+
+.heading{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ gap:12px;
+ flex-wrap:wrap;
+ margin-bottom:20px;
+}
+
+.heading h2{margin:0;font-size:22px}
+
+.counts{
+ display:flex;
+ gap:8px;
+ flex-wrap:wrap;
+}
+
+.count{
+ padding:8px 12px;
+ border-radius:10px;
+ background:#ffffff0c;
+ font-size:12px;
+ color:#c5cbe0;
+}
+
+.count b{color:white}
+
+.search{
+ width:100%;
+ padding:14px 16px;
+ margin-bottom:18px;
+ border:1px solid #8054ff70;
+ border-radius:12px;
+ background:#101329;
+ color:white;
+ font-size:14px;
+ outline:none;
+}
+
+.search:focus{border-color:#ffbd32}
+
+.table-wrap{
+ overflow-x:auto;
+ border-radius:14px;
+ border:1px solid #8054ff45;
+}
+
+table{
+ width:100%;
+ border-collapse:collapse;
+ min-width:540px;
+}
+
+th{
+ text-align:left;
+ padding:16px 13px;
+ background:#201b43;
+ color:#ffcd67;
+ font-size:12px;
+ letter-spacing:1px;
+ text-transform:uppercase;
+}
+
+td{
+ padding:14px 13px;
+ border-top:1px solid #ffffff12;
+ font-size:14px;
+}
+
+tr:hover td{background:#ffffff08}
+
+.member{
+ font-weight:700;
+ color:#f5f5ff;
+}
+
+.ticket{color:#aab0ca;font-size:12px}
+
+.actions{
+ display:flex;
+ gap:7px;
+}
+
+.action{
+ padding:8px 11px;
+ border-radius:9px;
+ border:1px solid #ffffff25;
+ background:#20263c;
+ color:#c6cce0;
+ cursor:pointer;
+ font-size:12px;
+ font-weight:700;
+ transition:.2s;
+}
+
+.action.present.active{
+ background:#087d58;
+ color:white;
+ border-color:#00e995;
+}
+
+.action.absent.active{
+ background:#8b2943;
+ color:white;
+ border-color:#ff647b;
+}
+
+.action:hover{filter:brightness(1.2)}
+
+.status{
+ font-size:12px;
+ font-weight:700;
+ color:#aeb5cf;
+}
+
+.footer{
+ text-align:center;
+ margin-top:30px;
+ color:#999eb8;
+ font-size:12px;
+ letter-spacing:3px;
+}
+
+@media(max-width:500px){
+ .panel{padding:14px}
+ .heading h2{font-size:19px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<a class="back" href="index.html">← Back to hub</a>
+
+<header>
+ <div class="brand">
+  <div class="line"></div>
+  <div class="logo">MΛ</div>
+  <div class="line"></div>
+ </div>
+
+ <h1>Meliora <span>'26</span></h1>
+ <p class="subtitle">GATHER • CONNECT • CELEBRATE</p>
+</header>
+
+<section class="panel">
+
+ <div class="heading">
+  <h2>Attendance Register</h2>
+
+  <div class="counts">
+   <div class="count">Total: <b id="total">0</b></div>
+   <div class="count">Present: <b id="presentCount">0</b></div>
+   <div class="count">Absent: <b id="absentCount">0</b></div>
+  </div>
+ </div>
+
+ <input
+  type="search"
+  class="search"
+  id="search"
+  placeholder="Search members..."
+ >
+
+ <div class="table-wrap">
+  <table>
+   <thead>
+    <tr>
+     <th>Ticket ID</th>
+     <th>Member Name</th>
+     <th>Attendance</th>
+    </tr>
+   </thead>
+
+   <tbody id="memberList"></tbody>
+  </table>
+ </div>
+
+</section>
+
+<div class="footer">
+ MELIORA '26
+</div>
+
+</div>
+
+<script>
+
+// EDIT YOUR MEMBER LIST HERE
+
+const members = [
+ {id:"001",name:"Vihas"},
+ {id:"002",name:"Member Two"},
+ {id:"003",name:"Member Three"},
+ {id:"004",name:"Member Four"},
+ {id:"005",name:"Member Five"},
+ {id:"006",name:"Member Six"},
+ {id:"007",name:"Member Seven"},
+ {id:"008",name:"Member Eight"}
+];
+
+// Attendance storage
+
+const attendance = {};
+
+const list = document.getElementById("memberList");
+
+function renderMembers(filter=""){
+
+ list.innerHTML="";
+
+ const filtered = members.filter(member =>
+  member.name.toLowerCase().includes(filter.toLowerCase()) ||
+  member.id.includes(filter)
+ );
+
+ filtered.forEach(member=>{
+
+  const status = attendance[member.id] || "";
+
+  const row = document.createElement("tr");
+
+  row.innerHTML=`
+   <td class="ticket">#${member.id}</td>
+
+   <td class="member">${member.name}</td>
+
+   <td>
+    <div class="actions">
+
+     <button class="action present ${status==="present"?"active":""}">
+      ✓ Present
+     </button>
+
+     <button class="action absent ${status==="absent"?"active":""}">
+      ✕ Absent
+     </button>
+
+    </div>
+   </td>
+  `;
+
+  const buttons=row.querySelectorAll("button");
+
+  buttons[0].onclick=()=>{
+   attendance[member.id]=
+    status==="present" ? "" : "present";
+   saveAndRender();
+  };
+
+  buttons[1].onclick=()=>{
+   attendance[member.id]=
+    status==="absent" ? "" : "absent";
+   saveAndRender();
+  };
+
+  list.appendChild(row);
+
+ });
+
+ updateCounts();
+}
+
+function updateCounts(){
+
+ const present=Object.values(attendance)
+  .filter(value=>value==="present").length;
+
+ const absent=Object.values(attendance)
+  .filter(value=>value==="absent").length;
+
+ document.getElementById("total").textContent=members.length;
+
+ document.getElementById("presentCount").textContent=present;
+
+ document.getElementById("absentCount").textContent=absent;
+}
+
+function saveAndRender(){
+ localStorage.setItem(
+  "melioraAttendance",
+  JSON.stringify(attendance)
+ );
+
+ renderMembers(document.getElementById("search").value);
+}
+
+// Restore saved attendance
+
+const saved=localStorage.getItem("melioraAttendance");
+
+if(saved){
+ Object.assign(attendance,JSON.parse(saved));
+}
+
+document.getElementById("search").addEventListener("input",e=>{
+ renderMembers(e.target.value);
+});
+
+renderMembers();
+
+</script>
+
+</body>
+</html>
