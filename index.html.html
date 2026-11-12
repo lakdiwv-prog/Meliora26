@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meliora '26 Attendance Scanner</title>
+  <!-- HTML5 QR Code Library -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f6f8; margin: 0; padding: 16px; color: #333; }
+    .container { max-width: 480px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .header h2 { margin: 0; color: #1a73e8; font-size: 1.3rem; }
+    .settings-icon { font-size: 1.4rem; cursor: pointer; background: none; border: none; padding: 4px; }
+
+    #reader { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 16px; background: #000; }
+    
+    .card { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px; margin-top: 16px; display: none; }
+    .card-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+    .card-row:last-child { border-bottom: none; }
+    .label { font-weight: 600; color: #666; }
+    .value { font-weight: 700; color: #111; }
+    
+    .badge-old { background: #e0e0e0; color: #333; padding: 2px 8px; border-radius: 4px; font-size: 0.9em; }
+    .badge-new { background: #d1e7dd; color: #0f5132; padding: 2px 8px; border-radius: 4px; font-size: 0.9em; }
+    
+    .status-absent { color: #d93025; font-weight: bold; }
+    .status-present { color: #188038; font-weight: bold; }
+    
+    button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 12px; }
+    .btn-submit { background-color: #1a73e8; color: white; }
+    .btn-submit:disabled { background-color: #ccc; cursor: not-allowed; }
+    .btn-rescan { background-color: #5f6368; color: white; }
+    
+    .alert { padding: 12px; border-radius: 6px; font-weight: bold; text-align: center; margin-top: 12px; display: none; }
+    .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-danger { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .alert-warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+    
+    .loader { text-align: center; padding: 20px; font-weight: bold; color: #666; display: none; }
+
+    /* Settings Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; }
+    .modal-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h2>Meliora '26 Scanner</h2>
+    <button class="settings-icon" onclick="toggleModal(true)">⚙️</button>
+  </div>
+
+  <div id="reader"></div>
+  <div id="loader" class="loader">Fetching Attendee Data...</div>
+  <div id="alertBox" class="alert"></div>
+
+  <div id="approvalCard" class="card">
+    <div class="card-row">
+      <span class="label">Ticket ID:</span>
+      <span id="dispTicketId" class="value"></span>
+    </div>
+    <div class="card-row">
+      <span class="label">Name:</span>
+      <span id="dispName" class="value"></span>
+    </div>
+    <div class="card-row">
+      <span class="label">Gender:</span>
+      <span id="dispGender" class="value"></span>
+    </div>
+    <div class="card-row">
+      <span class="label">Badge Type:</span>
+      <span id="dispBadge" class="value"></span>
+    </div>
+    <div class="card-row">
+      <span class="label">Payment Status:</span>
+      <span id="dispPayment" class="value"></span>
+    </div>
+    <div class="card-row">
+      <span class="label">Attendance:</span>
+      <span id="dispAttendance" class="value"></span>
+    </div>
+
+    <button id="btnSubmit" class="btn-submit" onclick="submitAttendance()">Mark as Present</button>
+    <button class="btn-rescan" onclick="resetScanner()">Scan Next Ticket</button>
+  </div>
+</div>
+
+<!-- Config Modal -->
+<div id="configModal" class="modal">
+  <div class="modal-content">
+    <h3>Configure Google Script API</h3>
+    <label for="apiUrlInput">Web App URL:</label>
+    <input type="text" id="apiUrlInput" placeholder="https://script.google.com/macros/s/.../exec">
+    <button class="btn-submit" onclick="saveConfig()">Save Configuration</button>
+  </div>
+</div>
+
+<script>
+  let API_URL = localStorage.getItem
